@@ -53,6 +53,11 @@ class Board:
         condition : function : agent, agent -> boolean
             A function that takes two agents and returns True if they are to
             be considered adjacent, false otherwise.
+
+            In the case of a radius function, the order of agents does not
+            matter as the adjacency matrix will be symmetric. However,
+            for nearest neighbor, this returns true if the first agent
+            is connected to the second agent (directed graph).
         state_update : function : agent -> None, or None
             If None (default), does nothing. Otherwise, calls a function to
             update the state of the given agent (e.g. find and store its
@@ -68,10 +73,11 @@ class Board:
         for i in range(self.n):
             if state_update is not None:
                 state_update(self.agents[i])
-            for j in range(i + 1, self.n):
+            for j in range(self.n):
+                if i == j:
+                    continue
                 if condition(self.agents[i], self.agents[j]):
                     a[i, j] = 1
-                    a[j, i] = 1
         return a
 
     def radius_adjacency(self, max_radius, min_radius=0):

@@ -22,7 +22,7 @@ def run_sim(r, n=50, m=10):
 
 if __name__ == '__main__':
     m = 10
-    n = 10
+    n = 5
     """
     reps = 1000
     step = 0.5
@@ -46,3 +46,4 @@ if __name__ == '__main__':
     board = Board(n, m, init_agents)
     print board.agent_df()
     print board.agents[0].find_nearest_neighbors(5)
+    print board.radius_adjacency(8)
