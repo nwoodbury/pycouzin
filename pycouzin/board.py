@@ -77,7 +77,7 @@ class Board:
                 if i == j:
                     continue
                 if condition(self.agents[i], self.agents[j]):
-                    a[i, j] = 1
+                    a[j, i] = 1
         return a
 
     def radius_adjacency(self, max_radius, min_radius=0):
@@ -110,8 +110,8 @@ class Board:
 
     def nearest_adjacency(self, k):
         """
-        Returns an adjacency matrix where i is connected to j if j is one of
-        i's k nearest neighbors.
+        Returns an adjacency matrix where i is connected to j if i is one of
+        j's k nearest neighbors.
 
         Parameters
         ----------
@@ -135,10 +135,10 @@ class Board:
         Computes and returns the laplacian of the adjacency matrix.
 
         NOTE: For assymetric adjacency matrices, we assume that the
-        incidence is the in-degree of a node (we sum the columns, not the
-        rows). Justification: Represents the amount of information flowing into
-        the node. If we use the out-degree, it is uninteresting, since the
-        out-degree is k for each node.
+        incidence is the out-degree of a node (we sum the rows, not the
+        columns). Justification: the in-degree, by definition, will be k for
+        every agent since each agent looks at its k nearest neighbors; thus
+        in-degree is uninteresting.
 
         Parameters
         ----------
@@ -149,7 +149,7 @@ class Board:
         laplacian : numpy.ndarray
         """
         l = copy.deepcopy(adjacency)
-        s = sum(adjacency)
+        s = np.sum(adjacency, axis=1)
         l = l * -1
         for i in range(self.n):
             l[i, i] = s[i]
