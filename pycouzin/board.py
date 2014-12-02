@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from numpy import linalg as la
 import copy
 from pycouzin.vector import Vector2D
 
@@ -117,3 +118,23 @@ class Board:
         for i in range(self.n):
             l[i, i] = s[i]
         return l
+
+    def is_connected(self, laplacian, tolerance=0.00001):
+        """
+        Returns True if the network represented by the given laplacian is
+        fully connected, false otherwise.
+
+        Parameters
+        ----------
+        laplacian : numpy.ndarray
+        tolerance : number
+            The tolerance at which to check the second largest eigenvalue.
+
+        Returns
+        -------
+        connected : boolean
+        """
+        w, v = la.eig(laplacian)
+        w.sort()
+        print w
+        return w[1] > tolerance
