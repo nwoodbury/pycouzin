@@ -25,6 +25,9 @@ class Board:
 
         self.agents = agent_init(self)
         assert len(self.agents) == self.n
+        for i in range(self.n):
+            # Let each agent know its index
+            self.agents[i].i = i
 
     def get_random_point(self):
         """

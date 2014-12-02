@@ -14,6 +14,17 @@ class Agent:
     o0 : Vector2D or None
         The initial orientation of this agent, or None if it should be randomly
         generated. Defaults to None.
+
+    Attributes
+    ----------
+    board : Board
+        A reference to the board containing this agent.
+    p : Vector2D
+        The current position of this agent.
+    o : Vector2D
+        The current orientation of this agent.
+    i : int
+        The index of this agent in the board's agent list.
     """
 
     def __init__(self, board, p0=None, o0=None):
@@ -22,5 +33,7 @@ class Agent:
             self.p = self.board.get_random_point()
         else:
             self.p = p0
+
+        self.i = -1
 
         # TODO implement orientation
