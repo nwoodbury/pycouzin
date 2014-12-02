@@ -1,7 +1,9 @@
 import random
 import numpy as np
 from numpy import linalg as la
+import pandas as pd
 import copy
+
 from pycouzin.vector import Vector2D
 
 
@@ -137,3 +139,20 @@ class Board:
         w, v = la.eig(laplacian)
         w.sort()
         return w[1] > tolerance
+
+    def agent_df(self):
+        """
+        Constructs a dataframe of all agents and their current positions.
+
+        Returns
+        -------
+        df : pandas.DataFrame
+        """
+        df = {}
+        for agent in self.agents:
+            df[agent.i] = {
+                'i': agent.i,
+                'x': agent.p.x,
+                'y': agent.p.y
+            }
+        return pd.DataFrame(df).transpose()
