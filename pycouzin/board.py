@@ -136,5 +136,4 @@ class Board:
         """
         w, v = la.eig(laplacian)
         w.sort()
-        print w
         return w[1] > tolerance
