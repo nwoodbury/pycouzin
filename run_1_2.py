@@ -13,42 +13,30 @@ def init_agents(board):
     return agents
 
 
-def run_sim(r, n=50, m=10):
+def run_sim(k, n=50, m=10):
     board = Board(n, m, init_agents)
-    A = board.radius_adjacency(r)
+    A = board.nearest_adjacency(k)
     L = board.laplacian(A)
     return board.is_connected(L)
 
 
 if __name__ == '__main__':
     m = 10
-    n = 5
-    """
-    reps = 1000
-    step = 0.5
-    radii = np.arange(0, 10 + step, step)
+    n = 30
+    reps = 100
+    ks = np.arange(1, n + 1)
     data = {}
-    for r in radii:
-        rix = r / float(m)
-        data[rix] = {}
+    for k in ks:
+        data[k] = {}
+        print k
         for rep in range(reps):
-            rs = run_sim(r, n, m)
+            rs = run_sim(k, n, m)
             x = 0
             if rs:
                 x = 1
-            data[rix][rep] = x
+            data[k][rep] = x
     data = pd.DataFrame(data).transpose()
     data['Summary'] = data.sum(axis=1)
     data['Summary'] = data['Summary'] * 100 / float(reps)
     print data['Summary']
-    data.to_csv('1_1_results.csv')
-    """
-    board = Board(n, m, init_agents)
-    print board.agent_df()
-    board.agents[0].find_nearest_neighbors(5)
-    print board.agents[0].nearest
-    A = board.nearest_adjacency(2)
-    L = board.laplacian(A)
-    print A
-    print L
-
+    data.to_csv('1_2_results.csv')

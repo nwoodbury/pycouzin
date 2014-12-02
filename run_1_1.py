@@ -22,9 +22,9 @@ def run_sim(r, n=50, m=10):
 
 if __name__ == '__main__':
     m = 10
-    n = 50
+    n = 30
 
-    reps = 1000
+    reps = 100
     step = 0.5
     radii = np.arange(0, 10 + step, step)
     data = {}
