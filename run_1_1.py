@@ -12,4 +12,6 @@ def init_agents(board):
 
 if __name__ == '__main__':
     board = Board(5, 10, init_agents)
-    print board.radius_adjacency(10)
+    adjacency = board.radius_adjacency(10)
+    print adjacency
+    print board.laplacian(adjacency)

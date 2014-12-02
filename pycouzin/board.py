@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import copy
 from pycouzin.vector import Vector2D
 
 
@@ -94,3 +95,22 @@ class Board:
                 return False
 
         return self.adjacency(condition)
+
+    def laplacian(self, adjacency):
+        """
+        Computes and returns the laplacian of the adjacency matrix.
+
+        Parameters
+        ----------
+        adjacency : numpy.ndarray
+
+        Returns
+        -------
+        laplacian : numpy.ndarray
+        """
+        l = copy.deepcopy(adjacency)
+        s = sum(adjacency)
+        l = l * -1
+        for i in range(self.n):
+            l[i, i] = s[i]
+        return l
