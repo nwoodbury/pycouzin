@@ -45,5 +45,10 @@ if __name__ == '__main__':
     """
     board = Board(n, m, init_agents)
     print board.agent_df()
-    print board.agents[0].find_nearest_neighbors(5)
-    print board.radius_adjacency(8)
+    board.agents[0].find_nearest_neighbors(5)
+    print board.agents[0].nearest
+    A = board.nearest_adjacency(2)
+    L = board.laplacian(A)
+    print A
+    print L
+

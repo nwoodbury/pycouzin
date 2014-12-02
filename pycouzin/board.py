@@ -108,9 +108,37 @@ class Board:
 
         return self.adjacency(condition)
 
+    def nearest_adjacency(self, k):
+        """
+        Returns an adjacency matrix where i is connected to j if j is one of
+        i's k nearest neighbors.
+
+        Parameters
+        ----------
+        k : int
+
+        Returns
+        -------
+        A : numpy.ndarray
+            See `self.adjacency()`
+        """
+        def state_update(agent):
+            agent.find_nearest_neighbors(k)
+
+        def condition(a1, a2):
+            return a2.i in a1.nearest
+
+        return self.adjacency(condition, state_update=state_update)
+
     def laplacian(self, adjacency):
         """
         Computes and returns the laplacian of the adjacency matrix.
+
+        NOTE: For assymetric adjacency matrices, we assume that the
+        incidence is the in-degree of a node (we sum the columns, not the
+        rows). Justification: Represents the amount of information flowing into
+        the node. If we use the out-degree, it is uninteresting, since the
+        out-degree is k for each node.
 
         Parameters
         ----------
