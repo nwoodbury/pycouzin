@@ -39,10 +39,10 @@ class Agent:
 
         # TODO implement orientation
 
-    def find_nearest_neighbors(self, k):
+    def find_nearest_neighbors(self, max_k, min_k):
         """
-        Finds and stores the indices of the k nearest neighbors to this agent
-        at the current time step.
+        Finds and stores the indices of the max_k nearest neighbors to this agent
+         and excludes the min_k nearest neighbors at the current time step.
 
         Parameters
         ----------
@@ -56,6 +56,7 @@ class Agent:
         df = df[df['i'] != self.i]  # Ignore present agent
         df['distances'] = df.apply(distance, axis=1)
         df = df.sort('distances', ascending=True)
-        df = df.head(k)
+        df = df.head(max_k)
+        df = df.tail(max_k - min_k)
 
         self.nearest = df['i'].tolist()

@@ -108,7 +108,7 @@ class Board:
 
         return self.adjacency(condition)
 
-    def nearest_adjacency(self, k):
+    def nearest_adjacency(self, max_k, min_k=0):
         """
         Returns an adjacency matrix where i is connected to j if i is one of
         j's k nearest neighbors.
@@ -123,7 +123,7 @@ class Board:
             See `self.adjacency()`
         """
         def state_update(agent):
-            agent.find_nearest_neighbors(k)
+            agent.find_nearest_neighbors(max_k, min_k)
 
         def condition(a1, a2):
             return a2.i in a1.nearest
@@ -170,9 +170,24 @@ class Board:
         -------
         connected : boolean
         """
+        fied = self.get_fied(laplacian)
+        return fied > tolerance
+
+    def get_fied(self, laplacian):
+        """
+        Gets the Fiedler eigenvalue of the specified Laplacian
+
+        Parameters
+        ----------
+        laplacian : numpy.ndarray
+
+        Returns
+        -------
+        w[1] : the Fiedler eigenvalue
+        """
         w, v = la.eig(laplacian)
         w.sort()
-        return w[1] > tolerance
+        return w[1]
 
     def agent_df(self):
         """
