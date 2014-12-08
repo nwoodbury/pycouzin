@@ -23,3 +23,24 @@ class Vector2D:
         distance : number
         """
         return math.sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
+
+    def __add__(self, other):
+        """
+        Vector addition.
+
+        Example
+        -------
+        v1 = Vector2D(2, 3)
+        v2 = Vector2D(3, 4)
+        v3 = v1 + v2
+
+        v3.x == 5
+        v3.y == 7
+        """
+        return Vector2D(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        """
+        Vector subtraction.
+        """
+        return Vector2D(self.x - other.x, self.y - other.y)
