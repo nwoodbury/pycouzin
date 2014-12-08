@@ -1,7 +1,9 @@
 import random
 import numpy as np
 from numpy import linalg as la
+import pandas as pd
 import copy
+
 from pycouzin.vector import Vector2D
 
 
@@ -51,6 +53,11 @@ class Board:
         condition : function : agent, agent -> boolean
             A function that takes two agents and returns True if they are to
             be considered adjacent, false otherwise.
+
+            In the case of a radius function, the order of agents does not
+            matter as the adjacency matrix will be symmetric. However,
+            for nearest neighbor, this returns true if the first agent
+            is connected to the second agent (directed graph).
         state_update : function : agent -> None, or None
             If None (default), does nothing. Otherwise, calls a function to
             update the state of the given agent (e.g. find and store its
@@ -66,9 +73,10 @@ class Board:
         for i in range(self.n):
             if state_update is not None:
                 state_update(self.agents[i])
-            for j in range(i + 1, self.n):
+            for j in range(self.n):
+                if i == j:
+                    continue
                 if condition(self.agents[i], self.agents[j]):
-                    a[i, j] = 1
                     a[j, i] = 1
         return a
 
@@ -100,9 +108,37 @@ class Board:
 
         return self.adjacency(condition)
 
+    def nearest_adjacency(self, max_k, min_k=0):
+        """
+        Returns an adjacency matrix where i is connected to j if i is one of
+        j's k nearest neighbors.
+
+        Parameters
+        ----------
+        k : int
+
+        Returns
+        -------
+        A : numpy.ndarray
+            See `self.adjacency()`
+        """
+        def state_update(agent):
+            agent.find_nearest_neighbors(max_k, min_k)
+
+        def condition(a1, a2):
+            return a2.i in a1.nearest
+
+        return self.adjacency(condition, state_update=state_update)
+
     def laplacian(self, adjacency):
         """
         Computes and returns the laplacian of the adjacency matrix.
+
+        NOTE: For assymetric adjacency matrices, we assume that the
+        incidence is the out-degree of a node (we sum the rows, not the
+        columns). Justification: the in-degree, by definition, will be k for
+        every agent since each agent looks at its k nearest neighbors; thus
+        in-degree is uninteresting.
 
         Parameters
         ----------
@@ -113,7 +149,7 @@ class Board:
         laplacian : numpy.ndarray
         """
         l = copy.deepcopy(adjacency)
-        s = sum(adjacency)
+        s = np.sum(adjacency, axis=1)
         l = l * -1
         for i in range(self.n):
             l[i, i] = s[i]
@@ -134,7 +170,38 @@ class Board:
         -------
         connected : boolean
         """
+        fied = self.get_fied(laplacian)
+        return fied > tolerance
+
+    def get_fied(self, laplacian):
+        """
+        Gets the Fiedler eigenvalue of the specified Laplacian
+
+        Parameters
+        ----------
+        laplacian : numpy.ndarray
+
+        Returns
+        -------
+        w[1] : the Fiedler eigenvalue
+        """
         w, v = la.eig(laplacian)
         w.sort()
-        print w
-        return w[1] > tolerance
+        return w[1]
+
+    def agent_df(self):
+        """
+        Constructs a dataframe of all agents and their current positions.
+
+        Returns
+        -------
+        df : pandas.DataFrame
+        """
+        df = {}
+        for agent in self.agents:
+            df[agent.i] = {
+                'i': agent.i,
+                'x': agent.p.x,
+                'y': agent.p.y
+            }
+        return pd.DataFrame(df).transpose()
