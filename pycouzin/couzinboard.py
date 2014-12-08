@@ -114,10 +114,15 @@ class CouzinBoard(Board):
                 plot.set_data([p.x, p.x + o.x], [p.y, p.y + o.y])
 
             # Update axes
-            minval = min(xs + ys) - 1
-            maxval = max(xs + ys) + 1
-            ax1.set_xlim((minval, maxval))
-            ax1.set_ylim((minval, maxval))
+            minxs = min(xs) - 1
+            minys = min(ys) - 1
+            maxxs = max(xs) + 1
+            maxys = max(ys) + 1
+            xlen = maxxs - minxs
+            ylen = maxys - minys
+            length = max(xlen, ylen)
+            ax1.set_xlim((minxs, minxs + length))
+            ax1.set_ylim((minys, minys + length))
             ax1.grid(True)
 
             # Update fiedler eigenvalues plot
