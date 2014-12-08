@@ -80,6 +80,25 @@ class Board:
                     a[j, i] = 1
         return a
 
+    def bidirectional_adjacency(self, condition, state_update=None):
+        """
+        Returns a bi-directional adjacency matrix based on the given condition.
+
+        See `adjacency()` for a list of parameters and return values.
+        """
+        a = np.zeros((self.n, self.n))
+        for i in range(self.n):
+            if state_update is not None:
+                state_update(self.agents[i])
+            for j in range(self.n):
+                if i == j:
+                    continue
+                if condition(self.agents[i], self.agents[j]) \
+                        or condition(self.agents[j], self.agents[i]):
+                    a[j, i] = 1
+                    a[i, j] = 1
+        return a
+
     def radius_adjacency(self, max_radius, min_radius=0):
         """
         Returns an adjacency matrix where agents i and j are considered to be
