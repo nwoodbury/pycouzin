@@ -41,8 +41,9 @@ class Agent:
 
     def find_nearest_neighbors(self, max_k, min_k):
         """
-        Finds and stores the indices of the max_k nearest neighbors to this agent
-         and excludes the min_k nearest neighbors at the current time step.
+        Finds and stores the indices of the max_k nearest neighbors to this
+        agent and excludes the min_k nearest neighbors at the current time
+        step.
 
         Parameters
         ----------
@@ -60,3 +61,22 @@ class Agent:
         df = df.tail(max_k - min_k)
 
         self.nearest = df['i'].tolist()
+
+    def update(self, a_r, a_o, a_a, a_k, agents):
+        """
+        Updates this agent's position. Must be overridden in a subclass.
+
+        Parameters
+        ----------
+        a_r : numpy.array
+            An nxn adjacency matrix for radius of repulsion.
+        a_o : numpy.array
+            An nxn adjacency matrix for radius of orientation.
+        a_a : numpy.array
+            An nxn adjacency matrix for radius of attraction.
+        a_k : numpy.array
+            An nxn adjacency matrix for k nearest neighbors.
+        agents : list of Agent
+            A list of agents which could be useful for other dynamics.
+        """
+        raise NotImplemented()
