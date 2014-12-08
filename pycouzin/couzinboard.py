@@ -1,4 +1,6 @@
-from pycouzin import Board
+import matplotlib.pyplot as plt
+
+from pycouzin.board import Board
 
 
 class CouzinBoard(Board):
@@ -30,7 +32,7 @@ class CouzinBoard(Board):
         Board.__init__(self, n, m, agent_init)
         self.rr = rr
         self.ro = ro
-        self.ri = ri
+        self.ra = ra
         self.k = k
         self.t = t
 
@@ -51,3 +53,21 @@ class CouzinBoard(Board):
         a_k = self.nearest_adjacency(self.k)
         for agent in self.agents:
             agent.update(a_r, a_o, a_a, a_k, self.agents)
+
+    def run(self):
+        """
+        Runs the simulation.
+        """
+        fig = plt.figure(figsize=(12, 12))
+
+        xs = [agent.p.x for agent in self.agents]
+        ys = [agent.p.y for agent in self.agents]
+
+        colors = [agent.color for agent in self.agents]
+
+        scat = plt.scatter(xs, ys, c=colors, s=50)
+        plt.show()
+
+        # for i in range(self.t):
+        #    print i
+        #    self.update()

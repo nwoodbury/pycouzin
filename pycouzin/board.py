@@ -87,9 +87,10 @@ class Board:
         See `adjacency()` for a list of parameters and return values.
         """
         a = np.zeros((self.n, self.n))
-        for i in range(self.n):
-            if state_update is not None:
+        if state_update is not None:
+            for i in range(self.n):
                 state_update(self.agents[i])
+        for i in range(self.n):
             for j in range(self.n):
                 if i == j:
                     continue
