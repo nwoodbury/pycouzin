@@ -18,4 +18,5 @@ class TopologicalAgent(Agent):
 
         See `Agent.update()`
         """
-        pass
+        self.p.x += 0.05
+        self.p.y += 0.04

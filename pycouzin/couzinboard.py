@@ -1,4 +1,8 @@
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+import math
+from random import random
 
 from pycouzin.board import Board
 
@@ -58,22 +62,78 @@ class CouzinBoard(Board):
         """
         Runs the simulation.
         """
-        fig = plt.figure(figsize=(12, 12))
+        fig = plt.figure(figsize=(24, 6))
+        ax1 = plt.subplot2grid((1, 3), (0, 0), aspect='equal')
+        ax2 = plt.subplot2grid((1, 3), (0, 1), colspan=2)
+        time_text = ax1.text(0.02, 0.95, 'Initialization',
+                             transform=ax1.transAxes)
+        ax1.set_title('Agent Positions and Orientations')
+        ax2.set_title('Average Fiedler Eigenvalue')
+
+        ax1.tick_params(axis='x', labelbottom='off')
+        ax1.tick_params(axis='y', labelleft='off')
+
+        ax2.set_xlim((0, self.t))
+        # ax2.set_ylim((0, 10))
 
         xs = [agent.p.x for agent in self.agents]
         ys = [agent.p.y for agent in self.agents]
 
         colors = [agent.color for agent in self.agents]
 
-        scat = plt.scatter(xs, ys, c=colors, s=50)
+        scat = ax1.scatter(xs, ys, c=colors, s=50)
 
         plots = []
         for agent in self.agents:
             p = agent.p
             o = agent.o
-            plot = plt.plot([p.x, p.x + o.x], [p.y, p.y + o.y], 'k')
+            plot, = ax1.plot([p.x, p.x + o.x], [p.y, p.y + o.y], 'k')
+            plots.append(plot)
 
+        feigsx = []
+        feigsy = []
+        fplot, = ax2.plot(feigsx, feigsy)
+
+        def update_fig(i):
+            # Update time text
+            time_text.set_text('t = %i' % (i + 1))
+
+            # Update Agent positions
+            self.update()
+            xs = [agent.p.x for agent in self.agents]
+            ys = [agent.p.y for agent in self.agents]
+            data = np.array([xs, ys]).transpose()
+            scat.set_offsets(data)
+
+            # Update Agent Orientations
+            for j in range(len(plots)):
+                agent = self.agents[j]
+                p = agent.p
+                o = agent.o
+                plot = plots[j]
+                plot.set_data([p.x, p.x + o.x], [p.y, p.y + o.y])
+
+            # Update axes
+            minval = min(xs + ys) - 1
+            maxval = max(xs + ys) + 1
+            ax1.set_xlim((minval, maxval))
+            ax1.set_ylim((minval, maxval))
+            ax1.grid(True)
+
+            # Update fiedler eigenvalues plot
+            feigsx.append(i)
+            feig = 1 + random()
+            feigsy.append(feig)
+            fplot.set_data(feigsx, feigsy)  # TODO
+            ax2.set_ylim((0, max(feigsy)))
+            ax2.grid(True)
+
+            return ax1, ax2, scat, plots[0]
+
+        ani = animation.FuncAnimation(fig, update_fig, frames=self.t,
+                                      repeat=False, blit=True, interval=10)
         plt.show()
+        # ani.save('test.mp4', fps=15)
 
         # for i in range(self.t):
         #    print i
