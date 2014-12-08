@@ -44,3 +44,11 @@ class Vector2D:
         Vector subtraction.
         """
         return Vector2D(self.x - other.x, self.y - other.y)
+
+    def normalize(self):
+        """
+        Returns a copy of this vector, normalized.
+        """
+        zero = Vector2D(0, 0)
+        l = float(zero.distance_to(self))
+        return Vector2D(self.x / l, self.y / l)

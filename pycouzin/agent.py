@@ -35,9 +35,13 @@ class Agent:
         else:
             self.p = p0
 
+        if o0 is None:
+            self.o = self.board.get_random_point().normalize()
+        else:
+            self.o = o0
+
         self.i = -1
 
-        # TODO implement orientation
 
     def find_nearest_neighbors(self, max_k, min_k):
         """

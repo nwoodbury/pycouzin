@@ -66,6 +66,13 @@ class CouzinBoard(Board):
         colors = [agent.color for agent in self.agents]
 
         scat = plt.scatter(xs, ys, c=colors, s=50)
+
+        plots = []
+        for agent in self.agents:
+            p = agent.p
+            o = agent.o
+            plot = plt.plot([p.x, p.x + o.x], [p.y, p.y + o.y], 'k')
+
         plt.show()
 
         # for i in range(self.t):
