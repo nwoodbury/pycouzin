@@ -137,6 +137,7 @@ class CouzinBoard(Board):
             favy = sum(feigsy) / float(len(feigsy))
             fplot.set_data(feigsx, feigsy)  # TODO
             favplot.set_data(favx, favy)
+            favplot.set_label('Average Fiedler Eigen Value (%.2f)' % favy)
             ax2.legend(loc=3)
 
             ax2.set_ylim((0, max(feigsy)))
