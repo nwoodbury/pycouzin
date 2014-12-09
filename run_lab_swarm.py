@@ -23,4 +23,5 @@ if __name__ == '__main__':
     k = 5
 
     board = CouzinBoard(n, m, init_agents, rr, ro, ra, k)
-    board.run(saveloc='out/swarm_01')
+    # board.run(saveloc='out/swarm_01')
+    board.run()

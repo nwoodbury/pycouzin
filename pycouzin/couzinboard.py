@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
-import math
-from random import random
 import os
+import math
 
 from pycouzin.board import Board
 
@@ -52,12 +51,16 @@ class CouzinBoard(Board):
         """
         Updates the position of the agents on the board.
         """
+        def fied_adj(a):
+            return self.get_fied(self.laplacian(a))
         a_r = self.radius_adjacency(self.rr)
         a_o = self.radius_adjacency(self.ro, self.rr)
         a_a = self.radius_adjacency(self.ra, self.ro)
         a_k = self.nearest_adjacency(self.k)
         for agent in self.agents:
             agent.update(a_r, a_o, a_a, a_k, self.agents)
+        return fied_adj(a_a), fied_adj(a_o), fied_adj(a_r), fied_adj(a_k), \
+            fied_adj(a_a + a_o + a_r)
 
     def run(self, saveloc=None):
         """
@@ -70,9 +73,9 @@ class CouzinBoard(Board):
             created as needed), and the first and last frame will be saved
             in <saveloc>/first.png and <saveloc>/last.png respectively.
         """
-        fig = plt.figure(figsize=(24, 6))
-        ax1 = plt.subplot2grid((1, 3), (0, 0), aspect='equal')
-        ax2 = plt.subplot2grid((1, 3), (0, 1), colspan=2)
+        fig = plt.figure(figsize=(32, 6))
+        ax1 = plt.subplot2grid((1, 4), (0, 0), aspect='equal')
+        ax2 = plt.subplot2grid((1, 4), (0, 1), colspan=2)
         time_text = ax1.text(0.02, 0.95, 'Initialization',
                              transform=ax1.transAxes)
         ax1.set_title('Agent Positions and Orientations')
@@ -103,8 +106,45 @@ class CouzinBoard(Board):
         feigsy = []
         favx = []
         favy = []
-        fplot, = ax2.plot(feigsx, feigsy, label='Fiedler Eigenvalues')
-        favplot, = ax2.plot(favx, favy, label='Average Fiedler Eigenvalue')
+        fplot, = ax2.plot(feigsx, feigsy, color='g', marker='+',
+                          label='Attraction: Fiedler Eigenvalues')
+        favplot, = ax2.plot(favx, favy, color='g',
+                            label='Attraction: Average Fiedler Eigenvalue')
+        feigox = []
+        feigoy = []
+        favox = []
+        favoy = []
+        foplot, = ax2.plot(feigox, feigoy, color='b', marker='+',
+                           label='Orientation: Fiedler Eigenvalues')
+        favoplot, = ax2.plot(favox, favoy, color='b',
+                             label='Orientation: Average Fiedler Eigenvalues')
+
+        feigrx = []
+        feigry = []
+        favrx = []
+        favry = []
+        frplot, = ax2.plot(feigrx, feigry, color='r', marker='+',
+                           label='Repulsion: Fiedler Eigenvalues')
+        favrplot, = ax2.plot(favrx, favry, color='r',
+                             label='Repulsion: Average Fiedler Eigenvalues')
+
+        feignx = []
+        feigny = []
+        favnx = []
+        favny = []
+        flplot, = ax2.plot(feignx, feigny, color='c', marker='+',
+                           label='All Zones: Fiedler Eigenvalues')
+        favlplot, = ax2.plot(favnx, favny, color='c',
+                             label='All Zones: Average Fiedler Eigenvalues')
+
+        feignx = []
+        feigny = []
+        favnx = []
+        favny = []
+        fkplot, = ax2.plot(feignx, feigny, color='m', marker='+',
+                           label='K Nearest: Fiedler Eigenvalues')
+        favkplot, = ax2.plot(favnx, favny, color='m',
+                             label='K Nearest: Average Fiedler Eigenvalues')
 
         if saveloc is not None and not os.path.exists(saveloc):
             os.makedirs(saveloc)
@@ -114,7 +154,7 @@ class CouzinBoard(Board):
             time_text.set_text('t = %i' % (i + 1))
 
             # Update Agent positions
-            self.update()
+            fa, fo, fr, fa, fall = self.update()
             xs = [agent.p.x for agent in self.agents]
             ys = [agent.p.y for agent in self.agents]
             data = np.array([xs, ys]).transpose()
@@ -143,15 +183,20 @@ class CouzinBoard(Board):
             # Update fiedler eigenvalues plot
             feigsx.append(i + 1)
             favx.append(i + 1)
-            feig = 1 + random()
-            feigsy.append(feig)
+            feigsy.append(fa)
             favy = sum(feigsy) / float(len(feigsy))
-            fplot.set_data(feigsx, feigsy)  # TODO
+            fplot.set_data(feigsx, feigsy)
             favplot.set_data(favx, favy)
-            favplot.set_label('Average Fiedler Eigenvalue (%.2f)' % favy)
-            ax2.legend(loc=3)
+            favplot.set_label('Attraction: Average Fiedler Eigenvalue (%.2f)'
+                              % favy)
+            ax2.legend(loc=3, ncol=1, bbox_to_anchor=(1.05, 0))
 
-            ax2.set_ylim((0, max(feigsy)))
+            feigsoy = [1, 2]
+            maxy = max(max(feigsy), max(feigsoy))
+            maxyc = math.ceil(maxy)
+            if maxyc - maxy < 0.2:
+                maxyc += 1
+            ax2.set_ylim((0, maxyc))
             ax2.grid(True)
 
             if saveloc:
@@ -169,3 +214,12 @@ class CouzinBoard(Board):
             plt.close()
         else:
             plt.show()
+
+
+class FiedlerPlot:
+    """
+    Utility class to aid in plotting fiedler eigenvalues.
+    """
+
+    def __init__():
+        pass
