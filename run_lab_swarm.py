@@ -17,9 +17,9 @@ if __name__ == '__main__':
     m = 10
     n = 10
 
-    rr = 3
-    ro = 5
-    ra = 7
+    rr = 10
+    ro = 11
+    ra = 12
     k = 5
 
     board = CouzinBoard(n, m, init_agents, rr, ro, ra, k)

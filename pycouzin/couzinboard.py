@@ -102,49 +102,11 @@ class CouzinBoard(Board):
             plots.append(plot)
 
         # Setup plots for fiedler eigenvalues and their averages
-        feigsx = []
-        feigsy = []
-        favx = []
-        favy = []
-        fplot, = ax2.plot(feigsx, feigsy, color='g', marker='+',
-                          label='Attraction: Fiedler Eigenvalues')
-        favplot, = ax2.plot(favx, favy, color='g',
-                            label='Attraction: Average Fiedler Eigenvalue')
-        feigox = []
-        feigoy = []
-        favox = []
-        favoy = []
-        foplot, = ax2.plot(feigox, feigoy, color='b', marker='+',
-                           label='Orientation: Fiedler Eigenvalues')
-        favoplot, = ax2.plot(favox, favoy, color='b',
-                             label='Orientation: Average Fiedler Eigenvalues')
-
-        feigrx = []
-        feigry = []
-        favrx = []
-        favry = []
-        frplot, = ax2.plot(feigrx, feigry, color='r', marker='+',
-                           label='Repulsion: Fiedler Eigenvalues')
-        favrplot, = ax2.plot(favrx, favry, color='r',
-                             label='Repulsion: Average Fiedler Eigenvalues')
-
-        feignx = []
-        feigny = []
-        favnx = []
-        favny = []
-        flplot, = ax2.plot(feignx, feigny, color='c', marker='+',
-                           label='All Zones: Fiedler Eigenvalues')
-        favlplot, = ax2.plot(favnx, favny, color='c',
-                             label='All Zones: Average Fiedler Eigenvalues')
-
-        feignx = []
-        feigny = []
-        favnx = []
-        favny = []
-        fkplot, = ax2.plot(feignx, feigny, color='m', marker='+',
-                           label='K Nearest: Fiedler Eigenvalues')
-        favkplot, = ax2.plot(favnx, favny, color='m',
-                             label='K Nearest: Average Fiedler Eigenvalues')
+        aplot = FiedlerPlot(ax2, 'Attraction', 'g')
+        oplot = FiedlerPlot(ax2, 'Orientation', 'b')
+        rplot = FiedlerPlot(ax2, 'Repulsion', 'r')
+        lplot = FiedlerPlot(ax2, 'Attr + Or + Rep', 'c')
+        kplot = FiedlerPlot(ax2, 'K Nearest', 'm')
 
         if saveloc is not None and not os.path.exists(saveloc):
             os.makedirs(saveloc)
@@ -154,7 +116,7 @@ class CouzinBoard(Board):
             time_text.set_text('t = %i' % (i + 1))
 
             # Update Agent positions
-            fa, fo, fr, fa, fall = self.update()
+            fa, fo, fr, fk, fl = self.update()
             xs = [agent.p.x for agent in self.agents]
             ys = [agent.p.y for agent in self.agents]
             data = np.array([xs, ys]).transpose()
@@ -181,18 +143,14 @@ class CouzinBoard(Board):
             ax1.grid(True)
 
             # Update fiedler eigenvalues plot
-            feigsx.append(i + 1)
-            favx.append(i + 1)
-            feigsy.append(fa)
-            favy = sum(feigsy) / float(len(feigsy))
-            fplot.set_data(feigsx, feigsy)
-            favplot.set_data(favx, favy)
-            favplot.set_label('Attraction: Average Fiedler Eigenvalue (%.2f)'
-                              % favy)
+            ma = aplot.update(i, fa)
+            mo = oplot.update(i, fo)
+            mr = rplot.update(i, fr)
+            ml = lplot.update(i, fl)
+            mk = kplot.update(i, fk)
             ax2.legend(loc=3, ncol=1, bbox_to_anchor=(1.05, 0))
 
-            feigsoy = [1, 2]
-            maxy = max(max(feigsy), max(feigsoy))
+            maxy = max(ma, mo, mr, ml, mk)
             maxyc = math.ceil(maxy)
             if maxyc - maxy < 0.2:
                 maxyc += 1
@@ -221,5 +179,42 @@ class FiedlerPlot:
     Utility class to aid in plotting fiedler eigenvalues.
     """
 
-    def __init__():
-        pass
+    fied_name_fmt = '%s: Fiedler Eigenvalues'
+    av_name_fmt = '%s: Average Fiedler Eigenvalue (%.2f)'
+
+    def __init__(self, ax, prefix, color):
+        self.prefix = prefix
+        self.ex = []  # x values for fiedler eigenvalue plot
+        self.ey = []  # y values for fiedler eigenvalue plot
+        self.ax = []  # x values for average fiedler eigenvalue plot
+        self.eplot, = ax.plot(self.ex, self.ey, color=color, marker='+',
+                              label=self.fied_name_fmt % self.prefix)
+        self.aplot, = ax.plot(self.ax, [], color=color,
+                              label=self.av_name_fmt % (self.prefix, 0))
+
+    def update(self, i, feig):
+        """
+        Updates this fiedler plot for a time step.
+
+        Parameters
+        ----------
+        i : int
+            The current timestep, 0 indexed.
+        feig : number
+            The current fiedler eigen value to plot.
+
+        Returns
+        -------
+        mx : number
+            The current maximum.
+        """
+
+        self.ex.append(i + 1)
+        self.ax.append(i + 1)
+        self.ey.append(feig)
+        av = sum(self.ey) / float(len(self.ey))
+        self.eplot.set_data(self.ex, self.ey)
+        self.aplot.set_data(self.ax, av)
+        self.aplot.set_label(self.av_name_fmt % (self.prefix, av))
+
+        return max(self.ey)
