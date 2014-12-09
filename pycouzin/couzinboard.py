@@ -3,6 +3,7 @@ import matplotlib.animation as animation
 import numpy as np
 import math
 from random import random
+import os
 
 from pycouzin.board import Board
 
@@ -58,9 +59,16 @@ class CouzinBoard(Board):
         for agent in self.agents:
             agent.update(a_r, a_o, a_a, a_k, self.agents)
 
-    def run(self):
+    def run(self, saveloc=None):
         """
         Runs the simulation.
+
+        Parameters
+        ----------
+        saveloc : str
+            The video will be saved in <saveloc>/animation.mp4 (directory
+            created as needed), and the first and last frame will be saved
+            in <saveloc>/first.png and <saveloc>/last.png respectively.
         """
         fig = plt.figure(figsize=(24, 6))
         ax1 = plt.subplot2grid((1, 3), (0, 0), aspect='equal')
@@ -68,12 +76,12 @@ class CouzinBoard(Board):
         time_text = ax1.text(0.02, 0.95, 'Initialization',
                              transform=ax1.transAxes)
         ax1.set_title('Agent Positions and Orientations')
-        ax2.set_title('Average Fiedler Eigenvalue')
+        ax2.set_title('Fiedler Eigenvalues')
 
         ax1.tick_params(axis='x', labelbottom='off')
         ax1.tick_params(axis='y', labelleft='off')
 
-        ax2.set_xlim((0, self.t))
+        ax2.set_xlim((1, self.t))
         # ax2.set_ylim((0, 10))
 
         xs = [agent.p.x for agent in self.agents]
@@ -95,8 +103,11 @@ class CouzinBoard(Board):
         feigsy = []
         favx = []
         favy = []
-        fplot, = ax2.plot(feigsx, feigsy, label='Fiedler Eigen Values')
-        favplot, = ax2.plot(favx, favy, label='Average Fiedler Eigen Values')
+        fplot, = ax2.plot(feigsx, feigsy, label='Fiedler Eigenvalues')
+        favplot, = ax2.plot(favx, favy, label='Average Fiedler Eigenvalue')
+
+        if saveloc is not None and not os.path.exists(saveloc):
+            os.makedirs(saveloc)
 
         def update_fig(i):
             # Update time text
@@ -130,26 +141,31 @@ class CouzinBoard(Board):
             ax1.grid(True)
 
             # Update fiedler eigenvalues plot
-            feigsx.append(i)
-            favx.append(i)
+            feigsx.append(i + 1)
+            favx.append(i + 1)
             feig = 1 + random()
             feigsy.append(feig)
             favy = sum(feigsy) / float(len(feigsy))
             fplot.set_data(feigsx, feigsy)  # TODO
             favplot.set_data(favx, favy)
-            favplot.set_label('Average Fiedler Eigen Value (%.2f)' % favy)
+            favplot.set_label('Average Fiedler Eigenvalue (%.2f)' % favy)
             ax2.legend(loc=3)
 
             ax2.set_ylim((0, max(feigsy)))
             ax2.grid(True)
 
+            if saveloc:
+                if i == 0:
+                    plt.savefig('%s/first.png' % saveloc)
+                if i == self.t - 1:
+                    plt.savefig('%s/last.png' % saveloc)
             return ax1, ax2, scat, plots[0]
 
         ani = animation.FuncAnimation(fig, update_fig, frames=self.t,
                                       repeat=False, blit=True, interval=10)
-        plt.show()
-        # ani.save('test.mp4', fps=15)
-
-        # for i in range(self.t):
-        #    print i
-        #    self.update()
+        if saveloc:
+            writer = animation.FFMpegWriter(fps=15, bitrate=2048)
+            ani.save('%s/animation.mp4' % saveloc, writer=writer)
+            plt.close()
+        else:
+            plt.show()
