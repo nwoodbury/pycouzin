@@ -90,9 +90,13 @@ class CouzinBoard(Board):
             plot, = ax1.plot([p.x, p.x + o.x], [p.y, p.y + o.y], 'k')
             plots.append(plot)
 
+        # Setup plots for fiedler eigenvalues and their averages
         feigsx = []
         feigsy = []
-        fplot, = ax2.plot(feigsx, feigsy)
+        favx = []
+        favy = []
+        fplot, = ax2.plot(feigsx, feigsy, label='Fiedler Eigen Values')
+        favplot, = ax2.plot(favx, favy, label='Average Fiedler Eigen Values')
 
         def update_fig(i):
             # Update time text
@@ -127,9 +131,14 @@ class CouzinBoard(Board):
 
             # Update fiedler eigenvalues plot
             feigsx.append(i)
+            favx.append(i)
             feig = 1 + random()
             feigsy.append(feig)
+            favy = sum(feigsy) / float(len(feigsy))
             fplot.set_data(feigsx, feigsy)  # TODO
+            favplot.set_data(favx, favy)
+            ax2.legend(loc=3)
+
             ax2.set_ylim((0, max(feigsy)))
             ax2.grid(True)
 
