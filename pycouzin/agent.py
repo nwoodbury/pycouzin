@@ -41,7 +41,8 @@ class Agent:
             self.o = o0
 
         self.i = -1
-
+        self.speed = 0.1
+        self.thetamax = 1.0
 
     def find_nearest_neighbors(self, max_k, min_k):
         """
@@ -84,3 +85,16 @@ class Agent:
             A list of agents which could be useful for other dynamics.
         """
         raise NotImplemented()
+
+    def get_adjacent_agents(self, a, agents):
+        """
+        Returns a list of agents adjacent to this agent defined by adjacency
+        matrix a.
+        """
+        adj_agents = []
+        for j in range(len(agents)):
+            if j == self.i:
+                continue
+            if a[j, self.i] == 1:
+                adj_agents.append(agents[j])
+        return adj_agents

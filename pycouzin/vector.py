@@ -45,6 +45,15 @@ class Vector2D:
         """
         return Vector2D(self.x - other.x, self.y - other.y)
 
+    def __mul__(self, other):
+        """
+        Scalar multiplication
+        """
+        return Vector2D(self.x * other, self.y * other)
+
+    def __str__(self):
+        return '[%.2f, %.2f]' % (self.x, self.y)
+
     def normalize(self):
         """
         Returns a copy of this vector, normalized.
