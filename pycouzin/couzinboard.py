@@ -81,8 +81,8 @@ class CouzinBoard(Board):
         ax1.set_title('Agent Positions and Orientations')
         ax2.set_title('Fiedler Eigenvalues')
 
-        ax1.tick_params(axis='x', labelbottom='off')
-        ax1.tick_params(axis='y', labelleft='off')
+        # ax1.tick_params(axis='x', labelbottom='off')
+        # ax1.tick_params(axis='y', labelleft='off')
 
         ax2.set_xlim((1, self.t))
         # ax2.set_ylim((0, 10))
@@ -113,6 +113,7 @@ class CouzinBoard(Board):
 
         def update_fig(i):
             # Update time text
+            print 'Running frame ', i
             time_text.set_text('t = %i' % (i + 1))
 
             # Update Agent positions
@@ -140,6 +141,18 @@ class CouzinBoard(Board):
             length = max(xlen, ylen)
             ax1.set_xlim((minxs, minxs + length))
             ax1.set_ylim((minys, minys + length))
+
+            if length < 20:
+                ticksize = 2
+            elif length < 50:
+                ticksize = 5
+            else:
+                ticksize = 10
+
+            ax1.set_xticks(np.arange(math.ceil(minxs),
+                                     math.ceil(minxs + length), ticksize))
+            ax1.set_yticks(np.arange(math.ceil(minys),
+                                     math.ceil(minys + length), ticksize))
             ax1.grid(True)
 
             # Update fiedler eigenvalues plot
@@ -165,9 +178,10 @@ class CouzinBoard(Board):
             return ax1, ax2, scat, plots[0]
 
         ani = animation.FuncAnimation(fig, update_fig, frames=self.t,
-                                      repeat=False, blit=True, interval=10)
+                                      repeat=False, interval=10)
+
         if saveloc:
-            writer = animation.FFMpegWriter(fps=15, bitrate=2048)
+            writer = animation.FFMpegWriter(fps=15, bitrate=4096)
             ani.save('%s/animation.mp4' % saveloc, writer=writer)
             plt.close()
         else:

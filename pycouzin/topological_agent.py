@@ -29,12 +29,12 @@ class TopologicalAgent(Agent):
                 rij = (agent.p - self.p).normalize()
                 d_r -= rij
             d_r.normalize()
-            print d_r
             d_i = d_r
         else:
-            #if no agents in the zone of repulsion, orientation and attraction dictate
+            # if no agents in the zone of repulsion, orientation and attraction
+            # dictate
 
-            #orientation zone
+            # orientation zone
             d_o = Vector2D(0, 0)
             in_orientation = self.get_adjacent_agents(a_o, agents)
             for agent in in_orientation:
@@ -42,7 +42,7 @@ class TopologicalAgent(Agent):
                 d_o += vj
             d_o.normalize()
 
-            #attraction zone
+            # attraction zone
             d_a = Vector2D(0, 0)
             in_attraction = self.get_adjacent_agents(a_a, agents)
             for agent in in_attraction:
