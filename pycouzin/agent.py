@@ -41,7 +41,7 @@ class Agent:
             self.o = o0
 
         self.i = -1
-        self.speed = 0.1
+        self.speed = 0.5
         self.thetamax = 1.0
 
     def find_nearest_neighbors(self, max_k, min_k):

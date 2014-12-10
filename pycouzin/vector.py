@@ -1,6 +1,5 @@
 import math
 
-
 class Vector2D:
     """
     Represents a 2D vector.
@@ -60,4 +59,20 @@ class Vector2D:
         """
         zero = Vector2D(0, 0)
         l = float(zero.distance_to(self))
-        return Vector2D(self.x / l, self.y / l)
+        if l == 0:
+            return Vector2D(0, 0)
+        else:
+            return Vector2D(self.x / l, self.y / l)
+
+    def get_angle(self):
+        """
+        Returns the angle (between -pi and pi) of the vector
+        """
+        return math.atan2(self.y, self.x)
+
+    def set_angle(self, a_des):
+        """
+        sets the angle for this vector and normalizes it
+        """
+        self.x = math.cos(a_des)
+        self.y = math.sin(a_des)

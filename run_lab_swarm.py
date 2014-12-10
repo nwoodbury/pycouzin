@@ -15,11 +15,11 @@ def init_agents(board):
 
 if __name__ == '__main__':
     m = 10
-    n = 10
+    n = 50
 
-    rr = 10
-    ro = 11
-    ra = 12
+    rr = 5
+    ro = 10
+    ra = 20
     k = 5
 
     board = CouzinBoard(n, m, init_agents, rr, ro, ra, k)
