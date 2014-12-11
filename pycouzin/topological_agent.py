@@ -1,6 +1,5 @@
 from pycouzin.agent import Agent
 from pycouzin.vector import Vector2D
-from random import normalvariate
 import math
 
 
@@ -18,9 +17,7 @@ class TopologicalAgent(Agent):
         """
         Computes the desired direction.
         """
-        noise = normalvariate(0.0, 0.2)
-        noise_vec = Vector2D(0, 0)
-        noise_vec.set_angle(noise)
+        noise_vec = Vector2D.noisy(0.0, 0.05)
         in_repulsion = self.get_adjacent_agents(a_r, agents)
         if len(in_repulsion) > 0:
             # agents in zone of repulsion, ignore orientation and attraction

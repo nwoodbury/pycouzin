@@ -1,4 +1,6 @@
 import math
+from random import normalvariate
+
 
 class Vector2D:
     """
@@ -76,3 +78,7 @@ class Vector2D:
         """
         self.x = math.cos(a_des)
         self.y = math.sin(a_des)
+
+    @staticmethod
+    def noisy(mean, std):
+        return Vector2D(normalvariate(mean, std), normalvariate(mean, std))
