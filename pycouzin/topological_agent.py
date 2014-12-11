@@ -17,12 +17,21 @@ class TopologicalAgent(Agent):
         """
         Computes the desired direction.
         """
-        noise_vec = Vector2D.noisy(0.0, 0.01)
         in_repulsion = self.get_adjacent_agents(a_r, agents)
-        if len(in_repulsion) > 0:
+        in_orientation = self.get_adjacent_agents(a_o, agents)
+        in_attraction = self.get_adjacent_agents(a_a, agents)
+
+        return self.get_direction_from_zones(in_repulsion, in_orientation, in_attraction)
+
+    def get_direction_from_zones(self, in_r, in_o, in_a):
+        """
+        Computes desired direction from zones
+        """
+        noise_vec = Vector2D.noisy(0.0, 0.01)
+        if len(in_r) > 0:
             # agents in zone of repulsion, ignore orientation and attraction
             d_r = Vector2D(0, 0)
-            for agent in in_repulsion:
+            for agent in in_r:
                 rij = (agent.p - self.p).normalize()
                 d_r -= rij
             d_r.normalize()
@@ -33,22 +42,21 @@ class TopologicalAgent(Agent):
 
             # orientation zone
             d_o = Vector2D(0, 0)
-            in_orientation = self.get_adjacent_agents(a_o, agents)
-            for agent in in_orientation:
+            for agent in in_o:
                 vj = agent.o.normalize()
                 d_o += vj
             d_o.normalize()
 
             # attraction zone
             d_a = Vector2D(0, 0)
-            in_attraction = self.get_adjacent_agents(a_a, agents)
-            for agent in in_attraction:
+            for agent in in_a:
                 rij = (agent.p - self.p).normalize()
                 d_a += rij
             d_a.normalize()
             d_i = (d_o + d_a) * 0.5
 
         return (d_i + noise_vec).normalize()
+
 
     def update(self, a_r, a_o, a_a, a_k, agents):
         """

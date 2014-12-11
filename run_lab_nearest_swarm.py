@@ -25,3 +25,4 @@ if __name__ == '__main__':
     board = CouzinBoard(n, m, init_agents, rr, ro, ra, k, t=300)
     board.run(saveloc='out/swarm_01')
     # board.run()
+
