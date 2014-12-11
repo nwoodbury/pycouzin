@@ -13,7 +13,7 @@ class TopologicalAgent(Agent):
 
     color = 'b'
 
-    def get_desired_direction(self, a_r, a_o, a_a, agents):
+    def get_desired_direction(self, a_r, a_o, a_a, a_k, agents):
         """
         Computes the desired direction.
         """
@@ -57,7 +57,7 @@ class TopologicalAgent(Agent):
 
         See `Agent.update()`
         """
-        d = self.get_desired_direction(a_r, a_o, a_a, agents)
+        d = self.get_desired_direction(a_r, a_o, a_a, a_k, agents)
         d = self.reg_ang_v(d)
         self.o = d
         self.p += self.o * self.speed

@@ -10,7 +10,7 @@ class PredatorAgent(TopologicalAgent):
     desist_r = 5
     pred_r = 3
 
-    def get_desired_direction(self, a_r, a_o, a_a, agents):
+    def get_desired_direction(self, a_r, a_o, a_a, a_k, agents):
         """
         Chases the nearest prey, ignoring everything else on the board.
 
@@ -62,7 +62,7 @@ class PreyAgent(TopologicalAgent):
     dead_repulsion = 7
     pred_kill = 0.75
 
-    def get_desired_direction(self, a_r, a_o, a_a, agents):
+    def get_desired_direction(self, a_r, a_o, a_a, a_k, agents):
         base_speed = 0.5
         self.speed = base_speed
         self.thetamax = 0.05
@@ -94,7 +94,7 @@ class PreyAgent(TopologicalAgent):
                 d_d -= rd
 
         base = TopologicalAgent.get_desired_direction(
-            self, a_r, a_o, a_a, agents)
+            self, a_r, a_o, a_a, a_k, agents)
         if run:
             return (d_p.normalize() + base).normalize()
         elif evade:
