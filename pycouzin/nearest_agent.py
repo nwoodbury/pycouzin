@@ -11,7 +11,8 @@ class NearestAgent (TopologicalAgent):
         in_orientation = []
         in_attraction = []
         j = self.i
-        for agent in self.nearest:
+        for c in self.nearest:
+            agent = agents[c]
             d = self.p.distance_to(agent.p)
             if d < self.board.rr:
                 in_repulsion.append(agent)

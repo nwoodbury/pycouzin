@@ -191,6 +191,7 @@ class CouzinBoard(Board):
 
         if saveloc:
             writer = animation.FFMpegWriter(fps=15, bitrate=4096)
+            plt.rcParams['animation.ffmpeg_path'] = 'c:/python27/Lib/ffmpeg/bin/ffmpeg.exe'
             ani.save('%s/animation.mp4' % saveloc, writer=writer)
             plt.close()
         else:
