@@ -18,10 +18,10 @@ if __name__ == '__main__':
     n = 100
 
     rr = 1
-    ro = 10
-    ra = 15
+    ro = 2
+    ra = 23
     k = 5
 
     board = CouzinBoard(n, m, init_agents, rr, ro, ra, k, t=300)
-    board.run(saveloc='out/flock_01')
+    board.run(saveloc='out/torus_01')
     # board.run()

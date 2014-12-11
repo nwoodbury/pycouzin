@@ -17,7 +17,7 @@ class TopologicalAgent(Agent):
         """
         Computes the desired direction.
         """
-        noise_vec = Vector2D.noisy(0.0, 0.05)
+        noise_vec = Vector2D.noisy(0.0, 0.01)
         in_repulsion = self.get_adjacent_agents(a_r, agents)
         if len(in_repulsion) > 0:
             # agents in zone of repulsion, ignore orientation and attraction

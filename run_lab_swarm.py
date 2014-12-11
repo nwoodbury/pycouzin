@@ -15,13 +15,13 @@ def init_agents(board):
 
 if __name__ == '__main__':
     m = 10
-    n = 50
+    n = 100
 
-    rr = 5
+    rr = 1
     ro = 7
-    ra = 15
+    ra = 20
     k = 5
 
-    board = CouzinBoard(n, m, init_agents, rr, ro, ra, k, t=150)
-    board.run(saveloc='out/swarm_01')
-    # board.run()
+    board = CouzinBoard(n, m, init_agents, rr, ro, ra, k, t=300)
+    # board.run(saveloc='out/swarm_01')
+    board.run()
