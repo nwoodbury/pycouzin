@@ -51,6 +51,13 @@ class CouzinBoard(Board):
         """
         Updates the position of the agents on the board.
         """
+        # First replace any agent with a new type if required
+        for i in range(len(self.agents)):
+            agent = self.agents[i]
+            if agent.replace_with is not None:
+                print 'Replacing agent %i' % i
+                self.agents[i] = agent.replace_with
+
         def fied_adj(a):
             return self.get_fied(self.laplacian(a))
         a_r = self.radius_adjacency(self.rr)
@@ -122,6 +129,8 @@ class CouzinBoard(Board):
             ys = [agent.p.y for agent in self.agents]
             data = np.array([xs, ys]).transpose()
             scat.set_offsets(data)
+            colors = [agent.color for agent in self.agents]
+            scat.set_color(colors)
 
             # Update Agent Orientations
             for j in range(len(plots)):
